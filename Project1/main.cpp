@@ -1,6 +1,7 @@
-﻿#include<fstream>
-#include<mouse.h>
-#include<keyboard.h>
+﻿#pragma once
+#include<fstream>
+#include"common/mouse.h"
+#include"common/keyboard.h"
 #include<vector>
 #include<string>
 #include<chrono>

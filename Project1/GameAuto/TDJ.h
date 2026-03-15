@@ -2,8 +2,8 @@
 
 #pragma once
 #include<fstream>
-#include<mouse.h>
-#include<keyboard.h>
+#include"..\common\mouse.h"
+#include"..\common\keyboard.h"
 
 class TDJ
 {
