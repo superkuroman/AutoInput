@@ -101,7 +101,12 @@ bool MOUSE::IsMouseMoved() const
 //左鍵單擊（）
  void MOUSE::LBClick()
 {
-	mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+	INPUT inputs[2] = {};
+	inputs[0].type = INPUT_MOUSE;
+	inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+	inputs[1].type = INPUT_MOUSE;
+	inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+	SendInput(2, inputs, sizeof(INPUT));
 }
 //左鍵單擊（）
  void MOUSE::LBClick(HWND hwnd)
@@ -113,8 +118,8 @@ bool MOUSE::IsMouseMoved() const
 //左鍵雙擊（）
  void MOUSE::LBDbClick()
 {
-	mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-	mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+	LBClick();
+	LBClick();
 }
 
 //左鍵按下（）
@@ -142,14 +147,19 @@ void MOUSE::LBUp(HWND hwnd)
 //右鍵單擊（）
 void MOUSE::RBClick()
 {
-	mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
+	INPUT inputs[2] = {};
+	inputs[0].type = INPUT_MOUSE;
+	inputs[0].mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
+	inputs[1].type = INPUT_MOUSE;
+	inputs[1].mi.dwFlags = MOUSEEVENTF_RIGHTUP;
+	SendInput(2, inputs, sizeof(INPUT));
 }
 
 //右鍵雙擊（）
 void MOUSE::RBDbClick()
 {
-	mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
-	mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
+	RBClick();
+	RBClick();
 }
 
 //右鍵按下（）
@@ -167,5 +177,10 @@ void MOUSE::RBDbClick()
 //中鍵單擊（）
  void MOUSE::MBClick()
 {
-	mouse_event(MOUSEEVENTF_MIDDLEDOWN | MOUSEEVENTF_MIDDLEUP, 0, 0, 0, 0);
+	INPUT inputs[2] = {};
+	inputs[0].type = INPUT_MOUSE;
+	inputs[0].mi.dwFlags = MOUSEEVENTF_MIDDLEDOWN;
+	inputs[1].type = INPUT_MOUSE;
+	inputs[1].mi.dwFlags = MOUSEEVENTF_MIDDLEUP;
+	SendInput(2, inputs, sizeof(INPUT));
 }
