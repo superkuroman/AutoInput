@@ -22,10 +22,9 @@ TDJ::~TDJ()
 
 void TDJ::Main()
 {
-	const int change_wait_count = 20;
-	int change_count = 0;
 	const unsigned int c_end_key = VK_2;
-	while (true)
+	m_keyboard.Update();
+	while (!m_keyboard.IsKeyInput(c_end_key))
 	{
 		m_keyboard.Update();
 		if (m_keyboard.IsKeyInput(VK_1))
@@ -59,22 +58,6 @@ void TDJ::Main()
 					return;
 				}
 			}
-		}
-		else if (m_keyboard.IsKeyInput(VK_LMENU))
-		{
-			// 左ALTキー
-			while (true)
-			{
-				if (m_keyboard.IsKeyInput(VK_LMENU))
-				{
-					break;
-				}
-				if (m_keyboard.IsKeyInput(c_end_key))
-				{
-					return;
-				}
-			}
-			change_count = 0;
 		}
 		else if (m_keyboard.IsKeyInput(VK_Q))
 		{
@@ -115,51 +98,6 @@ void TDJ::Main()
 			clikc_point.x = 1861;
 			clikc_point.y = 1302;
 			MouseLBClick(clikc_point);
-		}
-		else if (m_keyboard.IsKeyInput(VK_D))
-		{
-			Sleep(NEXT_WAIT);
-			m_mouse.LBDown();
-			Sleep(NEXT_WAIT);
-			m_mouse.LBUp();
-			Sleep(NEXT_WAIT);
-			// 石 捨てる インベントリ
-			POINT clikc_point;
-			clikc_point.x = 917;
-			clikc_point.y = 270;
-			MouseLBClick(clikc_point);
-		}
-		else if (m_keyboard.IsKeyInput(VK_F))
-		{
-			Sleep(NEXT_WAIT);
-			m_mouse.LBDown();
-			Sleep(NEXT_WAIT);
-			m_mouse.LBUp();
-			Sleep(NEXT_WAIT * 15);
-			// 石 留め キャラ選択 石ない状態
-			POINT clikc_point;
-			clikc_point.x = 1884;
-			clikc_point.y = 368;
-			MouseLBClick(clikc_point);
-		}
-		else if (m_keyboard.IsKeyInput(VK_C))
-		{
-			Sleep(NEXT_WAIT);
-			m_mouse.LBDown();
-			Sleep(NEXT_WAIT);
-			m_mouse.LBUp();
-			Sleep(NEXT_WAIT);
-
-			// 派遣戻す
-			POINT clikc_point;
-			clikc_point.x = 1552;
-			clikc_point.y = 1079;
-			MouseLBClick(clikc_point,static_cast<DWORD>(38.0));
-		}
-
-		if (m_keyboard.IsKeyInput(c_end_key))
-		{
-			return;
 		}
 	}
 }
