@@ -1,30 +1,48 @@
-﻿#ifdef USE_TDJ
+#ifdef USE_TDJ
 
 #include "TDJ.h"
 
-static const DWORD FPS = (DWORD)60.0f;
-static const DWORD SEC = (DWORD)1000.0f;
-static const DWORD WAIT_MILL_SEC = SEC / FPS;
-static const DWORD NEXT_WAIT = WAIT_MILL_SEC * 1;
+#include <cstddef>
 
+namespace
+{
+constexpr DWORD kFps = 60;
+constexpr DWORD kSec = 1000;
+constexpr DWORD kWaitMillSec = kSec / kFps;
+constexpr DWORD kNextWait = kWaitMillSec;
+constexpr unsigned int kEndKey = VK_2;
+
+struct ClickAction
+{
+	int key;
+	TDJ::RatioPoint point;
+};
+
+const ClickAction kClickActions[] = {
+	{ VK_Q, { 0.78750000, 0.88263889 } },
+	{ VK_W, { 0.81757813, 0.69166667 } },
+	{ VK_E, { 0.92382813, 0.62291667 } },
+	{ VK_SPACE, { 0.93750000, 0.86736111 } },
+	{ VK_R, { 0.72703125, 0.90416667 } },
+};
+}
 
 TDJ::TDJ(HWND hwnd)
-	:m_hwnd(hwnd)
+	: m_hwnd(hwnd)
+	, m_rect{}
 	, m_mouse()
 {
-	m_input_data_screen_size.x = 2560;
-	m_input_data_screen_size.y = 1440;
 	UpdateRectInfo();
 }
+
 TDJ::~TDJ()
 {
 }
 
 void TDJ::Main()
 {
-	const unsigned int c_end_key = VK_2;
 	m_keyboard.Update();
-	while (!m_keyboard.IsKeyInput(c_end_key))
+	while (!m_keyboard.IsKeyInput(kEndKey))
 	{
 		m_keyboard.Update();
 		if (m_keyboard.IsKeyInput(VK_1))
@@ -33,12 +51,12 @@ void TDJ::Main()
 			{
 				m_keyboard.Update();
 				m_mouse.LBClick();
-				Sleep(NEXT_WAIT * 10);
+				Sleep(kNextWait * 10);
 				if (m_keyboard.IsKeyInput(VK_1))
 				{
 					break;
 				}
-				if (m_keyboard.IsKeyInput(c_end_key))
+				if (m_keyboard.IsKeyInput(kEndKey))
 				{
 					return;
 				}
@@ -50,84 +68,50 @@ void TDJ::Main()
 			{
 				m_keyboard.Update();
 				m_mouse.LBClick();
-				Sleep(NEXT_WAIT);
+				Sleep(kNextWait);
 				if (m_keyboard.IsKeyInput(VK_3))
 				{
 					break;
 				}
-				if (m_keyboard.IsKeyInput(c_end_key))
+				if (m_keyboard.IsKeyInput(kEndKey))
 				{
 					return;
 				}
 			}
 		}
-		else if (m_keyboard.IsKeyInput(VK_Q))
+		else
 		{
-			// 1スキル
-			POINT clikc_point;
-			clikc_point.x = 2016;
-			clikc_point.y = 1271;
-			MouseLBClick(clikc_point);
-		}
-		else if (m_keyboard.IsKeyInput(VK_W))
-		{
-			// 2スキル
-			POINT clikc_point;
-			clikc_point.x = 2093;
-			clikc_point.y = 996;
-			MouseLBClick(clikc_point);
-		}
-		else if (m_keyboard.IsKeyInput(VK_E))
-		{
-			// 3スキル
-			POINT clikc_point;
-			clikc_point.x = 2365;
-			clikc_point.y = 897;
-			MouseLBClick(clikc_point);
-		}
-		else if (m_keyboard.IsKeyInput(VK_SPACE))
-		{
-			// 決定
-			POINT clikc_point;
-			clikc_point.x = 2400;
-			clikc_point.y = 1249;
-			MouseLBClick(clikc_point);
-		}
-		else if (m_keyboard.IsKeyInput(VK_R))
-		{
-			// 取り消し
-			POINT clikc_point;
-			clikc_point.x = 1861;
-			clikc_point.y = 1302;
-			MouseLBClick(clikc_point);
+			for (std::size_t index = 0; index < sizeof(kClickActions) / sizeof(kClickActions[0]); ++index)
+			{
+				if (m_keyboard.IsKeyInput(kClickActions[index].key))
+				{
+					MouseLBClick(kClickActions[index].point);
+					break;
+				}
+			}
 		}
 	}
 }
 
-void TDJ::MouseLBClick(POINT click_point, DWORD delay)
+void TDJ::MouseLBClick(RatioPoint click_point, DWORD delay)
 {
 	ShowCursor(FALSE);
 	UpdateRectInfo();
 	m_mouse.SavePos();
-	
-	POINT move_after_pos;
-	move_after_pos.x = m_rect.left + static_cast<int>(m_rate_x * click_point.x);
-	move_after_pos.y = m_rect.top + static_cast<int>(m_rate_y * click_point.y);
+
+	const POINT move_after_pos = ToWindowPoint(click_point);
 	m_mouse.MoveLock(
 		move_after_pos.x,
 		move_after_pos.y
 	);
-	if (delay >= 0.0f)
-	{
-		Sleep(NEXT_WAIT * delay);
-	}
-	Sleep(NEXT_WAIT);
+	Sleep(kNextWait * delay);
+	Sleep(kNextWait);
 	m_mouse.LBDown();
-	Sleep(NEXT_WAIT);
+	Sleep(kNextWait);
 	m_mouse.LBUp();
-	Sleep(NEXT_WAIT);
+	Sleep(kNextWait);
 	m_mouse.RestorePos();
-	Sleep(NEXT_WAIT);
+	Sleep(kNextWait);
 	m_mouse.Unlock();
 	ShowCursor(TRUE);
 }
@@ -135,12 +119,16 @@ void TDJ::MouseLBClick(POINT click_point, DWORD delay)
 void TDJ::UpdateRectInfo()
 {
 	GetWindowRect(m_hwnd, &m_rect);
-	double size_x =
-		static_cast<double>(m_rect.right) - static_cast<double>(m_rect.left);
-	double size_y =
-		static_cast<double>(m_rect.bottom) - static_cast<double>(m_rect.top);
-	m_rate_x = size_x / m_input_data_screen_size.x;
-	m_rate_y = size_y / m_input_data_screen_size.y;
+}
+
+POINT TDJ::ToWindowPoint(RatioPoint click_point) const
+{
+	const double size_x = static_cast<double>(m_rect.right - m_rect.left);
+	const double size_y = static_cast<double>(m_rect.bottom - m_rect.top);
+	return {
+		m_rect.left + static_cast<int>(size_x * click_point.x),
+		m_rect.top + static_cast<int>(size_y * click_point.y),
+	};
 }
 
 #endif

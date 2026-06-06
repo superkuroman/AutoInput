@@ -18,6 +18,17 @@ struct ClickRecord
     int y;
     MouseButton button;
     int delay_ms;
+    double x_ratio;
+    double y_ratio;
+    bool has_position_ratio;
+};
+
+struct ScreenInfo
+{
+    int left;
+    int top;
+    int width;
+    int height;
 };
 
 class InputStep
@@ -34,11 +45,14 @@ private:
     void HandlePlaybackTrigger();
     void RecordClick(MouseButton button);
     void SendClick(MouseButton button);
+    POINT ResolvePlaybackPoint(const ClickRecord& record) const;
+    ScreenInfo GetCurrentScreenInfo() const;
     const char* ToString(MouseButton button) const;
     bool TryParseButton(const std::string& value, MouseButton* button) const;
 
     bool recording_;
     std::vector<ClickRecord> records_;
+    ScreenInfo recording_screen_;
     bool lb_was_down_;
     bool rb_was_down_;
     bool mb_was_down_;

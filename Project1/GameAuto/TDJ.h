@@ -1,31 +1,33 @@
 #ifdef USE_TDJ
 
 #pragma once
-#include<fstream>
-#include"..\common\mouse.h"
-#include"..\common\keyboard.h"
+#include "..\common\mouse.h"
+#include "..\common\keyboard.h"
 
 class TDJ
 {
 public:
+	struct RatioPoint
+	{
+		double x;
+		double y;
+	};
+
 	TDJ(HWND hwnd);
 	~TDJ();
 
 	void Main();
-	
+
 private:
-	void MouseLBClick(POINT click_point, DWORD delay = 0.0);
+	void MouseLBClick(RatioPoint click_point, DWORD delay = 0);
 	void UpdateRectInfo();
+	POINT ToWindowPoint(RatioPoint click_point) const;
 
 private:
 	HWND m_hwnd;
-	POINT m_input_data_screen_size; // 入力データを取る時のスクリーンサイズ
 	RECT m_rect;
-	double m_rate_x;
-	double m_rate_y;
 	KeyBoard m_keyboard;
 	MOUSE m_mouse;
 };
 
 #endif
-
