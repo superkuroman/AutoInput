@@ -52,10 +52,7 @@ const TDJ::ClickStep kCancelSteps[] = {
 };
 
 const TDJ::ClickStep kZSteps[] = {
-	{ { 0.81039198, 0.94327391 }, Seconds(0.0) },
-};
-
-const TDJ::ClickStep kXSteps[] = {
+	{ { 0.81039198, 0.94327391 }, Seconds(0.5) },
 	{ { 0.93299909, 0.91734198 }, Seconds(0.0) },
 };
 
@@ -65,8 +62,7 @@ const ClickAction kClickActions[] = {
 	MakeClickAction(VK_E, kSkill3Steps),
 	MakeClickAction(VK_SPACE, kConfirmSteps),
 	MakeClickAction(VK_R, kCancelSteps),
-	MakeClickAction(VK_Z, kZSteps),
-	MakeClickAction(VK_X, kXSteps),
+	MakeClickAction(VK_Z, kZSteps)
 };
 }
 
