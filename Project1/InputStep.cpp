@@ -162,25 +162,25 @@ bool InputStep::TryParseButton(const std::string& value, MouseButton* button) co
 
 void InputStep::SaveToFile(const char* filename)
 {
-    char fullpath[MAX_PATH] = {0};
-    DWORD res = GetFullPathNameA(filename, MAX_PATH, fullpath, nullptr);
-    if (res == 0)
-    {
-        printf("Failed to resolve full path for '%s'\n", filename);
-        // fall back to given filename
-        strcpy_s(fullpath, MAX_PATH, filename);
-    }
-    else
-    {
-        printf("Saving to full path: %s\n", fullpath);
-    }
+	char fullpath[MAX_PATH] = {0};
+	DWORD res = GetFullPathNameA(filename, MAX_PATH, fullpath, nullptr);
+	if (res == 0)
+	{
+		printf("Failed to resolve full path for '%s'\n", filename);
+		// fall back to given filename
+		strcpy_s(fullpath, MAX_PATH, filename);
+	}
+	else
+	{
+		printf("Saving to full path: %s\n", fullpath);
+	}
 
-    std::ofstream ofs(fullpath);
-    if (!ofs)
-    {
-        printf("Failed to open %s for writing\n", fullpath);
-        return;
-    }
+	std::ofstream ofs(fullpath);
+	if (!ofs)
+	{
+		printf("Failed to open %s for writing\n", fullpath);
+		return;
+	}
 	const ScreenInfo screen = IsValidScreenInfo(recording_screen_) ? recording_screen_ : GetCurrentScreenInfo();
 	ofs << std::fixed << std::setprecision(8);
 	ofs << "{\n";

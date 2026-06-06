@@ -5,6 +5,7 @@ const DWORD FPS = (DWORD)60.0f;
 const DWORD SEC = (DWORD)1000.0f;
 const DWORD WAIT_MILL_SEC = SEC / FPS;
 const DWORD NEXT_WAIT = WAIT_MILL_SEC * 1;
+const DWORD IDLE_WAIT = 16;
 const unsigned int c_end_key = VK_2;
 
 Other::Other(HWND hwnd)
@@ -77,6 +78,8 @@ void Other::Main()
 		{
 			return;
 		}
+
+		Sleep(IDLE_WAIT);
 	}
 }
 

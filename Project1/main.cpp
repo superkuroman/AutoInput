@@ -17,6 +17,7 @@ constexpr DWORD kWaitMillSec = kSec / kFps;
 constexpr DWORD kNextWait = kWaitMillSec;
 constexpr double kDefaultLoopRate = 0.3;
 constexpr DWORD kDefaultWait = static_cast<DWORD>(kNextWait * kDefaultLoopRate);
+constexpr DWORD kIdleWait = 16;
 constexpr unsigned int kDefaultEndKey = VK_5;
 
 KeyBoard g_keyboard;
@@ -100,6 +101,8 @@ void RunDefaultAutoInput()
 		{
 			return;
 		}
+
+		Sleep(kIdleWait);
 	}
 }
 }
@@ -111,6 +114,7 @@ int main()
 	while (true)
 	{
 		input.Update();
+		Sleep(kIdleWait);
 	}
 #else
 	if (RunFirstAvailableGameMode())

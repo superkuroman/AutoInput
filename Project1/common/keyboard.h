@@ -7,7 +7,6 @@ class KeyBoard
 private:
 	static const int MAX = 512;
 	bool m_prev_down[MAX];
-	bool m_curr_down[MAX];
 
 	inline bool IsValidKey(int key) const
 	{
@@ -36,11 +35,6 @@ public:
 
 	inline void Update()
 	{
-		for (int ii = 0; ii < MAX; ii++)
-		{
-			const SHORT state = GetAsyncKeyState(ii);
-			m_curr_down[ii] = (state & 0x8000) != 0;
-		}
 	}
 
 	inline void init()
@@ -48,7 +42,6 @@ public:
 		for (int ii = 0; ii < MAX; ii++)
 		{
 			m_prev_down[ii] = false;
-			m_curr_down[ii] = false;
 		}
 	}
 
@@ -59,7 +52,8 @@ public:
 			return false;
 		}
 
-		const bool curr = m_curr_down[key];
+		const SHORT state = GetAsyncKeyState(key);
+		const bool curr = (state & 0x8000) != 0;
 		const bool prev = m_prev_down[key];
 
 		if (curr && !prev)

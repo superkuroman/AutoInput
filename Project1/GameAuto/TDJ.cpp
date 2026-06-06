@@ -10,6 +10,7 @@ constexpr DWORD kFps = 60;
 constexpr DWORD kSec = 1000;
 constexpr DWORD kWaitMillSec = kSec / kFps;
 constexpr DWORD kNextWait = kWaitMillSec;
+constexpr DWORD kIdleWait = 16;
 constexpr unsigned int kEndKey = VK_2;
 
 struct ClickAction
@@ -90,6 +91,8 @@ void TDJ::Main()
 				}
 			}
 		}
+
+		Sleep(kIdleWait);
 	}
 }
 
