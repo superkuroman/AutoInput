@@ -1,6 +1,7 @@
 ﻿#ifdef USE_TDJ
 
 #pragma once
+#include <cstddef>
 #include "..\common\mouse.h"
 #include "..\common\keyboard.h"
 
@@ -13,13 +14,19 @@ public:
 		double y;
 	};
 
+	struct ClickStep
+	{
+		RatioPoint point;
+		DWORD wait_after_ms;
+	};
+
 	TDJ(HWND hwnd);
 	~TDJ();
 
 	void Main();
 
 private:
-	void MouseLBClick(RatioPoint click_point, DWORD delay = 0);
+	void MouseLBClickSequence(const ClickStep* steps, std::size_t step_count);
 	void UpdateRectInfo();
 	POINT ToWindowPoint(RatioPoint click_point) const;
 

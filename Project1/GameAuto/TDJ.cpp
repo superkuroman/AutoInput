@@ -13,18 +13,60 @@ constexpr DWORD kNextWait = kWaitMillSec;
 constexpr DWORD kIdleWait = 16;
 constexpr unsigned int kEndKey = VK_2;
 
+constexpr DWORD Seconds(double seconds)
+{
+	return static_cast<DWORD>(seconds * 1000.0);
+}
+
 struct ClickAction
 {
 	int key;
-	TDJ::RatioPoint point;
+	const TDJ::ClickStep* steps;
+	std::size_t step_count;
+};
+
+template <std::size_t Count>
+constexpr ClickAction MakeClickAction(int key, const TDJ::ClickStep (&steps)[Count])
+{
+	return { key, steps, Count };
+}
+
+const TDJ::ClickStep kSkill1Steps[] = {
+	{ { 0.78750000, 0.88263889 }, Seconds(0.0) },
+};
+
+const TDJ::ClickStep kSkill2Steps[] = {
+	{ { 0.81757813, 0.69166667 }, Seconds(0.0) },
+};
+
+const TDJ::ClickStep kSkill3Steps[] = {
+	{ { 0.92382813, 0.62291667 }, Seconds(0.0) },
+};
+
+const TDJ::ClickStep kConfirmSteps[] = {
+	{ { 0.93750000, 0.86736111 }, Seconds(0.0) },
+};
+
+const TDJ::ClickStep kCancelSteps[] = {
+	{ { 0.72703125, 0.90416667 }, Seconds(0.0) },
+};
+
+const TDJ::ClickStep kZSteps[] = {
+	{ { 0.81039198, 0.94327391 }, Seconds(0.0) },
+};
+
+const TDJ::ClickStep kXSteps[] = {
+	{ { 0.93299909, 0.91734198 }, Seconds(0.0) },
 };
 
 const ClickAction kClickActions[] = {
-	{ VK_Q, { 0.78750000, 0.88263889 } },
-	{ VK_W, { 0.81757813, 0.69166667 } },
-	{ VK_E, { 0.92382813, 0.62291667 } },
-	{ VK_SPACE, { 0.93750000, 0.86736111 } },
-	{ VK_R, { 0.72703125, 0.90416667 } },
+	MakeClickAction(VK_Q, kSkill1Steps),
+	MakeClickAction(VK_W, kSkill2Steps),
+	MakeClickAction(VK_E, kSkill3Steps),
+	MakeClickAction(VK_SPACE, kConfirmSteps),
+	MakeClickAction(VK_R, kCancelSteps),
+	MakeClickAction(VK_Z, kZSteps),
+	MakeClickAction(VK_X, kXSteps),
 };
 }
 
@@ -86,7 +128,7 @@ void TDJ::Main()
 			{
 				if (m_keyboard.IsKeyInput(kClickActions[index].key))
 				{
-					MouseLBClick(kClickActions[index].point);
+					MouseLBClickSequence(kClickActions[index].steps, kClickActions[index].step_count);
 					break;
 				}
 			}
@@ -96,23 +138,36 @@ void TDJ::Main()
 	}
 }
 
-void TDJ::MouseLBClick(RatioPoint click_point, DWORD delay)
+void TDJ::MouseLBClickSequence(const ClickStep* steps, std::size_t step_count)
 {
+	if (steps == nullptr || step_count == 0)
+	{
+		return;
+	}
+
 	ShowCursor(FALSE);
 	UpdateRectInfo();
 	m_mouse.SavePos();
 
-	const POINT move_after_pos = ToWindowPoint(click_point);
-	m_mouse.MoveLock(
-		move_after_pos.x,
-		move_after_pos.y
-	);
-	Sleep(kNextWait * delay);
-	Sleep(kNextWait);
-	m_mouse.LBDown();
-	Sleep(kNextWait);
-	m_mouse.LBUp();
-	Sleep(kNextWait);
+	for (std::size_t index = 0; index < step_count; ++index)
+	{
+		const POINT move_after_pos = ToWindowPoint(steps[index].point);
+		m_mouse.MoveLock(
+			move_after_pos.x,
+			move_after_pos.y
+		);
+		Sleep(kNextWait);
+		m_mouse.LBDown();
+		Sleep(kNextWait);
+		m_mouse.LBUp();
+		Sleep(kNextWait);
+
+		if (index + 1 < step_count && steps[index].wait_after_ms > 0)
+		{
+			Sleep(steps[index].wait_after_ms);
+		}
+	}
+
 	m_mouse.RestorePos();
 	Sleep(kNextWait);
 	m_mouse.Unlock();
