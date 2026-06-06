@@ -6,64 +6,107 @@ class KeyBoard
 {
 private:
 	static const int MAX = 512;
-	bool  m_key_in[MAX];
+	bool m_prev_down[MAX];
+	bool m_curr_down[MAX];
+
+	inline bool IsValidKey(int key) const
+	{
+		return key >= 0 && key < MAX;
+	}
+
+	inline void SendKeyInput(int key, bool key_up)
+	{
+		WORD scan_code = static_cast<WORD>(MapVirtualKey(key, MAPVK_VK_TO_VSC));
+		INPUT input = {};
+		input.type = INPUT_KEYBOARD;
+		input.ki.wScan = scan_code;
+		input.ki.dwFlags = KEYEVENTF_SCANCODE;
+		if (key_up)
+		{
+			input.ki.dwFlags |= KEYEVENTF_KEYUP;
+		}
+		SendInput(1, &input, sizeof(INPUT));
+	}
 
 public:
+	KeyBoard()
+	{
+		init();
+	}
+
 	inline void Update()
 	{
 		for (int ii = 0; ii < MAX; ii++)
 		{
-			GetAsyncKeyState(ii);
+			const SHORT state = GetAsyncKeyState(ii);
+			m_curr_down[ii] = (state & 0x8000) != 0;
 		}
 	}
+
 	inline void init()
 	{
 		for (int ii = 0; ii < MAX; ii++)
 		{
-			m_key_in[ii] = false;
+			m_prev_down[ii] = false;
+			m_curr_down[ii] = false;
 		}
 	}
 
 	inline bool IsKeyInput(int key)
 	{
-		if (GetAsyncKeyState(key))
+		if (!IsValidKey(key))
 		{
-			if (m_key_in[key])
-			{
-				return false;
-			}
-			else
-			{
-				m_key_in[key] = true;
-				return true;
-			}
+			return false;
 		}
 
-		m_key_in[key] = false;
+		const bool curr = m_curr_down[key];
+		const bool prev = m_prev_down[key];
+
+		if (curr && !prev)
+		{
+			m_prev_down[key] = true;
+			return true;
+		}
+
+		if (!curr)
+		{
+			m_prev_down[key] = false;
+		}
+
 		return false;
 	}
+
 	inline void KeyInput(int key)
 	{
-		m_key_in[key] = true;
-		keybd_event(key, 0, 0, 0);
-		keybd_event(key, 0, KEYEVENTF_KEYUP, 0);
+		if (!IsValidKey(key))
+		{
+			return;
+		}
+
+		m_prev_down[key] = true;
+		SendKeyInput(key, false);
+		SendKeyInput(key, true);
 	}
+
 	inline void KeyInput(int key, bool is_up)
 	{
-		m_key_in[key] = true;
-		if (is_up == true)
+		if (!IsValidKey(key))
 		{
-			keybd_event(key, 0, KEYEVENTF_KEYUP, 0);
+			return;
 		}
-		else
-		{
-			keybd_event(key, 0, 0, 0);
-		}
+
+		m_prev_down[key] = !is_up;
+		SendKeyInput(key, is_up);
 	}
+
 	inline void KeyInput(int key, HWND hwnd)
 	{
-		m_key_in[key] = true;
-		SendMessage(hwnd, WM_KEYDOWN, key, 0);
-		SendMessage(hwnd, WM_KEYUP, key, 0);
+		if (!IsValidKey(key))
+		{
+			return;
+		}
+
+		m_prev_down[key] = true;
+		KeyInput(key);
 	}
 };

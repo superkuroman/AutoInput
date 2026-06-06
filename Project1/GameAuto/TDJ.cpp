@@ -31,6 +31,7 @@ void TDJ::Main()
 		{
 			while (true)
 			{
+				m_keyboard.Update();
 				m_mouse.LBClick();
 				Sleep(NEXT_WAIT * 10);
 				if (m_keyboard.IsKeyInput(VK_1))
@@ -47,6 +48,7 @@ void TDJ::Main()
 		{
 			while (true)
 			{
+				m_keyboard.Update();
 				m_mouse.LBClick();
 				Sleep(NEXT_WAIT);
 				if (m_keyboard.IsKeyInput(VK_3))

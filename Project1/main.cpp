@@ -80,10 +80,12 @@ int main()
 	while (true)
 	{
 		const unsigned int c_end_key = VK_5;
+		m_keyboard.Update();
 		if (m_keyboard.IsKeyInput(VK_1) || m_keyboard.IsKeyInput(VK_2))
 		{
 			while (true)
 			{
+				m_keyboard.Update();
 				static const double rate = 0.3f;
 				static const DWORD wait_sec = static_cast<DWORD>( (double)NEXT_WAIT * rate );
 				Sleep(wait_sec);
@@ -113,6 +115,7 @@ int main()
 		{
 			while (true)
 			{
+				m_keyboard.Update();
 				static const double rate = 0.3f;
 				static const DWORD wait_sec = static_cast<DWORD>((double)NEXT_WAIT * rate);
 				Sleep(wait_sec);
