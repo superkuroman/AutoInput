@@ -1,4 +1,4 @@
-#ifdef USE_TDJ
+﻿#ifdef USE_TDJ
 
 #pragma once
 #include "..\common\mouse.h"

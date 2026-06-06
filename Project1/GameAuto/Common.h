@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include<fstream>
 #include"..\common\mouse.h"
 #include"..\common\keyboard.h"
@@ -25,7 +25,7 @@ private:
 private:
 	static Common m_instance;
 	HWND m_hwnd;
-	POINT m_input_data_screen_size; // “ü—Íƒf[ƒ^‚ğæ‚é‚ÌƒXƒNƒŠ[ƒ“ƒTƒCƒY
+	POINT m_input_data_screen_size; // å…¥åŠ›ãƒ‡ãƒ¼ã‚¿ã‚’å–ã‚‹æ™‚ã®ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚µã‚¤ã‚º
 	RECT m_rect;
 	double m_rate_x;
 	double m_rate_y;

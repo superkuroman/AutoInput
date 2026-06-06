@@ -1,4 +1,4 @@
-#ifdef USE_ARCHE_LAND
+Ôªø#ifdef USE_ARCHE_LAND
 
 #include "InArcheLand.h"
 
@@ -45,7 +45,7 @@ void InArcheLand::Main()
 			}
 		}
 
-		// 1ÉXÉLÉã
+		// 1„Çπ„Ç≠„É´
 		if (m_keyboard.IsKeyInput(VK_Q))
 		{
 			POINT clikc_point;
@@ -54,7 +54,7 @@ void InArcheLand::Main()
 			MouseLBClick(clikc_point);
 		}
 
-		// 2ÉXÉLÉã
+		// 2„Çπ„Ç≠„É´
 		if (m_keyboard.IsKeyInput(VK_W))
 		{
 			POINT clikc_point;
@@ -63,7 +63,7 @@ void InArcheLand::Main()
 			MouseLBClick(clikc_point);
 		}
 
-		// 3ÉXÉLÉã
+		// 3„Çπ„Ç≠„É´
 		if (m_keyboard.IsKeyInput(VK_E))
 		{
 			POINT clikc_point;
@@ -72,7 +72,7 @@ void InArcheLand::Main()
 			MouseLBClick(clikc_point);
 		}
 
-		// åàíË
+		// Ê±∫ÂÆö
 		if (m_keyboard.IsKeyInput(VK_SPACE))
 		{
 			POINT clikc_point;
@@ -80,7 +80,7 @@ void InArcheLand::Main()
 			clikc_point.y = 1236;
 			MouseLBClick(clikc_point);
 		}
-		// éÊÇËè¡Çµ
+		// Âèñ„ÇäÊ∂à„Åó
 		if (m_keyboard.IsKeyInput(VK_R))
 		{
 			POINT clikc_point;

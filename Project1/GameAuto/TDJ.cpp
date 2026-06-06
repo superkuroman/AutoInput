@@ -1,4 +1,4 @@
-#ifdef USE_TDJ
+﻿#ifdef USE_TDJ
 
 #include "TDJ.h"
 

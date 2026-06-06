@@ -1,4 +1,4 @@
-#ifdef USE_ARCHE_LAND
+ï»¿#ifdef USE_ARCHE_LAND
 
 #pragma once
 #include<fstream>
@@ -19,7 +19,7 @@ private:
 
 private:
 	HWND m_hwnd;
-	POINT m_input_data_screen_size; // “ü—Íƒf[ƒ^‚ğæ‚é‚ÌƒXƒNƒŠ[ƒ“ƒTƒCƒY
+	POINT m_input_data_screen_size; // å…¥åŠ›ãƒ‡ãƒ¼ã‚¿ã‚’å–ã‚‹æ™‚ã®ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚µã‚¤ã‚º
 	RECT m_rect;
 	double m_rate_x;
 	double m_rate_y;

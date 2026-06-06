@@ -1,4 +1,4 @@
-#ifdef USE_OTHER
+﻿#ifdef USE_OTHER
 #include "Other.h"
 
 const DWORD FPS = (DWORD)60.0f;

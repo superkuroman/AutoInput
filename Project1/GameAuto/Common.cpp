@@ -1,4 +1,4 @@
-#include "Common.h"
+﻿#include "Common.h"
 
 const DWORD FPS = (DWORD)60.0f;
 const DWORD SEC = (DWORD)1000.0f;
