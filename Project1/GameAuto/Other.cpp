@@ -26,10 +26,12 @@ void Other::Main()
 	while (true)
 	{
 		const unsigned int c_end_key = VK_2;
+		m_keyboard.Update();
 		if (m_keyboard.IsKeyInput(VK_1))
 		{
 			while (true)
 			{
+				m_keyboard.Update();
 				Sleep(NEXT_WAIT * 10);
 				m_keyboard.KeyInput(VK_Z);
 				//m_mouse.LBClick();

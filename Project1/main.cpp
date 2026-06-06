@@ -1,152 +1,124 @@
-﻿#pragma once
-#include<fstream>
-#include"common/mouse.h"
-#include"common/keyboard.h"
-#include<vector>
-#include<string>
-#include<chrono>
-#include<ctime>
-#include<iomanip>
-#include<sstream>
-#include<windows.h>
+#include <windows.h>
+
+#include "common/keyboard.h"
+#include "common/mouse.h"
+
+#ifdef MousePosCustom
 #include "InputStep.h"
-#ifdef USE_ARCHE_LAND
-#include"GameAuto\InArcheLand.h"
-#endif
-#ifdef USE_TDJ
-#include"GameAuto\TDJ.h"
-#endif
-#ifdef USE_OTHER
-#include"GameAuto\Other.h"
+#else
+#include "GameAuto/GameModeLauncher.h"
 #endif
 
-using namespace std;
-static const DWORD FPS = (DWORD)30.0f;
-static const DWORD SEC = (DWORD)1000.0f;
-static const DWORD WAIT_MILL_SEC = static_cast<DWORD>((double)SEC / (double)FPS);
-static const DWORD NEXT_WAIT = WAIT_MILL_SEC * 1;
-static const float _4KRATE = 2.5f;
-static const float FULLHD_RATE = 1.0f;
-static const float SETTING_RATE = _4KRATE;
+namespace
+{
+constexpr DWORD kFps = 30;
+constexpr DWORD kSec = 1000;
+constexpr DWORD kWaitMillSec = kSec / kFps;
+constexpr DWORD kNextWait = kWaitMillSec;
+constexpr double kDefaultLoopRate = 0.3;
+constexpr DWORD kDefaultWait = static_cast<DWORD>(kNextWait * kDefaultLoopRate);
+constexpr unsigned int kDefaultEndKey = VK_5;
 
-KeyBoard m_keyboard;
-MOUSE m_mouse;
+KeyBoard g_keyboard;
+MOUSE g_mouse;
+
+bool ShouldSwitchDefaultLoop()
+{
+	return
+		g_keyboard.IsKeyInput(VK_1) ||
+		g_keyboard.IsKeyInput(VK_3) ||
+		g_keyboard.IsKeyInput(VK_4);
+}
+
+bool ShouldStopDefaultMode()
+{
+	return g_keyboard.IsKeyInput(kDefaultEndKey);
+}
+
+bool RunMouseClickLoop()
+{
+	while (true)
+	{
+		g_keyboard.Update();
+		Sleep(kDefaultWait);
+		g_mouse.LBDown();
+		Sleep(kDefaultWait);
+		g_mouse.LBUp();
+		Sleep(kDefaultWait);
+
+		if (ShouldSwitchDefaultLoop())
+		{
+			return false;
+		}
+		if (ShouldStopDefaultMode())
+		{
+			return true;
+		}
+	}
+}
+
+bool RunKeyInputLoop(int key)
+{
+	while (true)
+	{
+		g_keyboard.Update();
+		Sleep(kDefaultWait);
+		g_keyboard.KeyInput(key);
+		Sleep(kDefaultWait);
+
+		if (ShouldSwitchDefaultLoop())
+		{
+			return false;
+		}
+		if (ShouldStopDefaultMode())
+		{
+			return true;
+		}
+	}
+}
+
+void RunDefaultAutoInput()
+{
+	while (true)
+	{
+		g_keyboard.Update();
+		if (g_keyboard.IsKeyInput(VK_1) || g_keyboard.IsKeyInput(VK_2))
+		{
+			if (RunMouseClickLoop())
+			{
+				return;
+			}
+		}
+		else if (g_keyboard.IsKeyInput(VK_3) || g_keyboard.IsKeyInput(VK_4))
+		{
+			if (RunKeyInputLoop(VK_Z))
+			{
+				return;
+			}
+		}
+		else if (ShouldStopDefaultMode())
+		{
+			return;
+		}
+	}
+}
+}
+
 int main()
 {
 #ifdef MousePosCustom
-
-#define JSON_OUTPUT_FILE "TargetClicks.json"
-	InputStep input(JSON_OUTPUT_FILE);
-	bool is_stop = false;
+	InputStep input("TargetClicks.json");
 	while (true)
 	{
 		input.Update();
 	}
 #else
-
-#ifdef USE_OTHER
-	HWND hWnd = FindWindow(NULL, TEXT("未設定です"));
-	if (hWnd != nullptr)
+	if (RunFirstAvailableGameMode())
 	{
-		Other other(nullptr);
-		other.Main();
 		return 0;
 	}
-#endif
-#ifdef USE_TDJ
-	HWND hWnd = FindWindow(NULL, TEXT("天地劫：幽城再临"));
-	if (hWnd == nullptr)
-	{
-		hWnd = FindWindow(NULL, TEXT("天地劫"));
-	}
-	if (hWnd != nullptr)
-	{
-		TDJ tdj(hWnd);
-		tdj.Main();
-		return 0;
-	}
-#endif
-#ifdef USE_ARCHE_LAND
-	HWND hWnd = FindWindow(NULL, TEXT("아르케랜드"));
-	if (hWnd != nullptr)
-	{
-		InArcheLand arche_land(hWnd);
-		arche_land.Main();
-		return 0;
-	}
-#endif
-	
 
-	while (true)
-	{
-		const unsigned int c_end_key = VK_5;
-		m_keyboard.Update();
-		if (m_keyboard.IsKeyInput(VK_1) || m_keyboard.IsKeyInput(VK_2))
-		{
-			while (true)
-			{
-				m_keyboard.Update();
-				static const double rate = 0.3f;
-				static const DWORD wait_sec = static_cast<DWORD>( (double)NEXT_WAIT * rate );
-				Sleep(wait_sec);
-				m_mouse.LBDown();
-				Sleep(wait_sec);
-				m_mouse.LBUp();
-				Sleep(wait_sec);
-				if (m_keyboard.IsKeyInput(VK_1))
-				{
-					break;
-				}
-				if (m_keyboard.IsKeyInput(VK_3))
-				{
-					break;
-				}
-				if (m_keyboard.IsKeyInput(VK_4))
-				{
-					break;
-				}
-				if (m_keyboard.IsKeyInput(c_end_key))
-				{
-					return 0;
-				}
-			}
-		}
-		else if (m_keyboard.IsKeyInput(VK_3) || m_keyboard.IsKeyInput(VK_4))
-		{
-			while (true)
-			{
-				m_keyboard.Update();
-				static const double rate = 0.3f;
-				static const DWORD wait_sec = static_cast<DWORD>((double)NEXT_WAIT * rate);
-				Sleep(wait_sec);
-				m_keyboard.KeyInput(VK_Z);
-				Sleep(wait_sec);
-				if (m_keyboard.IsKeyInput(VK_1))
-				{
-					break;
-				}
-				if (m_keyboard.IsKeyInput(VK_3))
-				{
-					break;
-				}
-				if (m_keyboard.IsKeyInput(VK_4))
-				{
-					break;
-				}
-				if (m_keyboard.IsKeyInput(c_end_key))
-				{
-					return 0;
-				}
-			}
-		}
-		else if (m_keyboard.IsKeyInput(c_end_key))
-		{
-			return 0;
-		}
-
-		
-	}
-#endif // DEBUGTEST
+	RunDefaultAutoInput();
+#endif
 	return 0;
 }
-

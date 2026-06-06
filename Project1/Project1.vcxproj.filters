@@ -35,6 +35,9 @@
     <ClInclude Include="GameAuto\Common.h">
       <Filter>GameAuto</Filter>
     </ClInclude>
+    <ClInclude Include="GameAuto\GameModeLauncher.h">
+      <Filter>GameAuto</Filter>
+    </ClInclude>
     <ClInclude Include="GameAuto\Other.h">
       <Filter>GameAuto</Filter>
     </ClInclude>
@@ -54,6 +57,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameAuto\Common.cpp">
+      <Filter>GameAuto</Filter>
+    </ClCompile>
+    <ClCompile Include="GameAuto\GameModeLauncher.cpp">
       <Filter>GameAuto</Filter>
     </ClCompile>
     <ClCompile Include="GameAuto\Other.cpp">
